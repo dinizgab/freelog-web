@@ -1,8 +1,10 @@
-import { createSBClient } from "@/lib/supabase-server"
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
+import { supabaseServer } from "@/lib/supabase/server"
 
-export async function GET(request: Request) {
-    const { searchParams, origin } = new URL(request.url)
+export async function GET(request: NextRequest) {
+    const origin = request.nextUrl.origin
+    const searchParams = request.nextUrl.searchParams
+
     const code = searchParams.get("code")
     const next = searchParams.get("next") ?? "/"
 
@@ -12,7 +14,7 @@ export async function GET(request: Request) {
 
 
     if (code) {
-        const supabase = await createSBClient()
+        const supabase = await supabaseServer()
         const { data, error } = await supabase.auth.exchangeCodeForSession(code)
 
         console.log("Auth response:", { data, error })

@@ -4,7 +4,7 @@ import type React from "react"
 
 import { createContext, useContext, useEffect, useState } from "react"
 import type { User } from "@supabase/supabase-js"
-import { supabase, type UserProfile } from "@/lib/supabase"
+import { supabase, type UserProfile } from "@/lib/supabase/browser"
 
 interface AuthContextType {
   user: User | null
