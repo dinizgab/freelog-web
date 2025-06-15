@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Briefcase, Users } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
 import { toast } from "sonner"
-import type { UserRole } from "@/lib/supabase"
+import type { UserRole } from "@/lib/supabase/browser"
 
 export default function SetupPage() {
   const { user, updateProfile } = useAuth()
@@ -35,7 +35,6 @@ export default function SetupPage() {
 
       toast.success("Profile setup completed!")
 
-      // Redirect based on role
       const redirectPath = selectedRole === "freelancer" ? "/dashboard" : "/client"
       router.push(redirectPath)
     } catch (error) {

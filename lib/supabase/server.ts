@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers'
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import { createServerClient } from '@supabase/ssr'
 
 export const supabaseServer = async () => {
     const cookieStore = await cookies()
@@ -23,6 +23,11 @@ export const supabaseServer = async () => {
                     // user sessions.
                 }
             },
+        },
+        auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            flowType: 'pkce',
         },
     })
 }

@@ -33,53 +33,53 @@ export async function updateSession(request: NextRequest) {
         },
     })
 
-try {
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
+    try {
+        const {
+            data: { user },
+        } = await supabase.auth.getUser()
 
-    const protectedRoutes = ["/dashboard", "/client"]
-    const isProtectedRoute = protectedRoutes.some((route) => request.nextUrl.pathname.startsWith(route))
+        const protectedRoutes = ["/dashboard", "/client"]
+        const isProtectedRoute = protectedRoutes.some((route) => request.nextUrl.pathname.startsWith(route))
 
-    if (isProtectedRoute && !user) {
-        return NextResponse.redirect(new URL("/login", request.url))
+        if (isProtectedRoute && !user) {
+            return NextResponse.redirect(new URL("/login", request.url))
+        }
+
+        if (user && isProtectedRoute) {
+            const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single()
+
+            const userRole = profile?.role
+
+            if (!userRole) {
+                return NextResponse.redirect(new URL("/setup", request.url))
+            }
+
+            if (request.nextUrl.pathname.startsWith("/dashboard") && userRole !== "freelancer") {
+                return NextResponse.redirect(new URL("/client", request.url))
+            }
+
+            if (request.nextUrl.pathname.startsWith("/client") && userRole !== "client") {
+                return NextResponse.redirect(new URL("/dashboard", request.url))
+            }
+        }
+
+        if (user && (request.nextUrl.pathname === "/login" || request.nextUrl.pathname === "/signup")) {
+            const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single()
+
+            if (!profile?.role) {
+                return NextResponse.redirect(new URL("/setup", request.url))
+            }
+
+            const redirectPath = profile.role === "freelancer" ? "/dashboard" : "/client"
+            return NextResponse.redirect(new URL(redirectPath, request.url))
+        }
+    } catch (error) {
+        console.error("Middleware error:", error)
     }
 
-    if (user && isProtectedRoute) {
-        const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single()
+    await supabase.auth.getUser()
 
-        const userRole = profile?.role
-
-        if (!userRole) {
-            return NextResponse.redirect(new URL("/setup", request.url))
-        }
-
-        if (request.nextUrl.pathname.startsWith("/dashboard") && userRole !== "freelancer") {
-            return NextResponse.redirect(new URL("/client", request.url))
-        }
-
-        if (request.nextUrl.pathname.startsWith("/client") && userRole !== "client") {
-            return NextResponse.redirect(new URL("/dashboard", request.url))
-        }
-    }
-
-    if (user && (request.nextUrl.pathname === "/login" || request.nextUrl.pathname === "/signup")) {
-        const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single()
-
-        if (!profile?.role) {
-            return NextResponse.redirect(new URL("/setup", request.url))
-        }
-
-        const redirectPath = profile.role === "freelancer" ? "/dashboard" : "/client"
-        return NextResponse.redirect(new URL(redirectPath, request.url))
-    }
-} catch (error) {
-    console.error("Middleware error:", error)
-}
-
-await supabase.auth.getUser()
-
-return response
+    return response
 }
 
 

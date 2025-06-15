@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button"
 import { Briefcase, AlertCircle } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
 import { toast } from "sonner"
+import { signInWithGoogle } from "@/lib/actions"
 
 export default function SignupPage() {
-  const { signInWithGoogle, isConfigured } = useAuth()
+  const { isConfigured } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
 
   const handleGoogleSignIn = async () => {
