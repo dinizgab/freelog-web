@@ -23,6 +23,7 @@ export async function GET(request: NextRequest) {
                     id: data.user.id,
                     email: data.user.email!,
                     full_name: data.user.user_metadata.full_name || data.user.email!.split("@")[0],
+                    role: "freelancer",
                     avatar_url: data.user.user_metadata.avatar_url,
                 })
             }
