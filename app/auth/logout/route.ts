@@ -8,6 +8,8 @@ export async function GET() {
 
     await supabase.auth.signOut({ scope: 'local' })
 
-    return NextResponse.redirect(new URL('/', process.env.NEXT_PUBLIC_SITE_URL))
+    const origin = new URL(request.url).origin
+
+    return NextResponse.redirect(`${origin}/`)
 }
 
