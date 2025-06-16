@@ -6,18 +6,13 @@ import { UserProfile } from "./supabase/browser"
 
 export const signInWithGoogle = async () => {
     const supabase = await supabaseServer()
-    let siteUrl = process.env.VERCEL_URL
-    if (!siteUrl) {
-        siteUrl = `https://${siteUrl}`
-    } else {
-        siteUrl = 'http://localhost:3000'
-    }
 
     try {
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: "google",
             options: {
-                redirectTo: `${siteUrl}/auth/callback`,
+                // TODO - Make this url dynamically setted based on environment
+                redirectTo: `https://freelog-web-6hpa.vercel.app/auth/callback`,
             },
         })
 
