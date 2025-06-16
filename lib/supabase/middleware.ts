@@ -50,9 +50,9 @@ export async function updateSession(request: NextRequest) {
 
             const userRole = profile?.role
 
-            if (!userRole) {
-                return NextResponse.redirect(new URL("/setup", request.url))
-            }
+            //if (!userRole) {
+            //    return NextResponse.redirect(new URL("/setup", request.url))
+            //}
 
             if (request.nextUrl.pathname.startsWith("/dashboard") && userRole !== "freelancer") {
                 return NextResponse.redirect(new URL("/client", request.url))
@@ -64,13 +64,15 @@ export async function updateSession(request: NextRequest) {
         }
 
         if (user && (request.nextUrl.pathname === "/login" || request.nextUrl.pathname === "/signup")) {
-            const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single()
+            //const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single()
 
-            if (!profile?.role) {
-                return NextResponse.redirect(new URL("/setup", request.url))
-            }
-
-            const redirectPath = profile.role === "freelancer" ? "/dashboard" : "/client"
+            // TODO - Client will not be needed to create a profile (for now)
+            //if (!profile?.role) {
+            //    return NextResponse.redirect(new URL("/setup", request.url))
+            //}
+            //
+            const redirectPath = "/dashboard"
+            //const redirectPath = profile.role === "freelancer" ? "/dashboard" : "/client"
             return NextResponse.redirect(new URL(redirectPath, request.url))
         }
     } catch (error) {
