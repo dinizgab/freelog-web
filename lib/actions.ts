@@ -8,7 +8,7 @@ export const signInWithGoogle = async () => {
     const supabase = await supabaseServer()
     let siteUrl = process.env.VERCEL_URL
     if (!siteUrl) {
-        siteUrl = `https://${vercelUrl}`
+        siteUrl = `https://${siteUrl}`
     } else {
         siteUrl = 'http://localhost:3000'
     }
