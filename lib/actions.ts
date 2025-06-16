@@ -1,4 +1,4 @@
-"use client"
+"use server"
 
 import { redirect } from "next/navigation"
 import { supabaseServer } from "./supabase/server"
@@ -6,12 +6,18 @@ import { UserProfile } from "./supabase/browser"
 
 export const signInWithGoogle = async () => {
     const supabase = await supabaseServer()
+    let siteUrl = process.env.VERCEL_URL
+    if (!siteUrl) {
+        siteUrl = `https://${vercelUrl}`
+    } else {
+        siteUrl = 'http://localhost:3000'
+    }
 
     try {
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: "google",
             options: {
-                redirectTo: `${window.location.origin}/auth/callback`,
+                redirectTo: `${serverUrl}/auth/callback`,
             },
         })
 
